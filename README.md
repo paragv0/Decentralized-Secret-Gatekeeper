@@ -10,7 +10,6 @@ A serverless AWS security architecture that acts as a cryptographic proxy for se
 ## Links & Live Demos
 
 * **Frontend Dashboard:** [Secure Gatekeeper UI (S3 Hosted)](https://x24222160-sc-api.s3.us-east-1.amazonaws.com/index.html)
-* **Interactive API Docs:** [Swagger UI / FastAPI Docs](https://xfno7odld6hxji7kchsbpqo7za0jqtix.lambda-url.us-east-1.on.aws/docs)
 * **API Gateway Base URL:** `https://lv1jxm0j6a.execute-api.us-east-1.amazonaws.com/Test/ledger`
 
 ---
