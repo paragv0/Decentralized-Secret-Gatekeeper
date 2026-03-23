@@ -1,9 +1,17 @@
 # Decentralized Secret Gatekeeper
 
 **Author:** Parag Jagjivan Vadher  
-**Context:** National College of Ireland  
+**Context:** MSc Cloud Computing, National College of Ireland  
 
 A serverless AWS security architecture that acts as a cryptographic proxy for sensitive cloud secrets. This project prevents unauthorized direct-database access and ensures **non-repudiation** by forcing all key retrievals through an immutable, hash-linked Audit Ledger (DLT).
+
+---
+
+## Links & Live Demos
+
+* **Frontend Dashboard:** [Secure Gatekeeper UI (S3 Hosted)](https://x24222160-sc-api.s3.us-east-1.amazonaws.com/index.html)
+* **Interactive API Docs:** [Swagger UI / FastAPI Docs](https://xfno7odld6hxji7kchsbpqo7za0jqtix.lambda-url.us-east-1.on.aws/docs)
+* **API Gateway Base URL:** `https://lv1jxm0j6a.execute-api.us-east-1.amazonaws.com/Test/ledger`
 
 ---
 
@@ -14,13 +22,33 @@ In standard cloud environments, developers often fetch API keys directly from a 
 **The Gatekeeper** solves this by merging **AWS Secrets Manager** with a **DynamoDB-backed Distributed Ledger**. 
 To get a secret, a user must authenticate via API Gateway and "mine" a block on the ledger. The system will *only* unlock the vault and return the secret if the cryptographic audit log is successfully and permanently recorded.
 
-## Architecture & Tech Stack
+---
 
-* **Compute:** AWS Lambda (Python 3.x / `boto3`)
-* **API Gateway:** REST API with `x-api-key` usage plans for granular access control.
-* **The Vault:** AWS Secrets Manager (Stores project-specific JSON keychains).
-* **The Ledger:** Amazon DynamoDB (Stores the hash-linked audit trail).
-* **Frontend:** Vanilla HTML/CSS/JS (Zero-dependency visualizer and verification dashboard).
+## Technologies Used
+
+* **Cloud Provider:** Amazon Web Services (AWS)
+* **Compute Layer:** AWS Lambda (Serverless Python 3.x)
+* **API Routing:** Amazon API Gateway & AWS Lambda Function URLs
+* **Database (The Ledger):** Amazon DynamoDB (NoSQL)
+* **Security (The Vault):** AWS Secrets Manager
+* **Languages & Frameworks:** Python, FastAPI, JavaScript, HTML5, CSS3
+* **Libraries:** `boto3` (AWS SDK), `hashlib` (SHA-256 Cryptography)
+
+---
+
+## API Endpoints
+
+The system exposes a RESTful interface protected by an AWS API Gateway Usage Plan. All requests require a valid `x-api-key` in the headers.
+
+### `POST /ledger` (Authenticate & Fetch)
+* **Purpose:** Mines a new block on the ledger and dispenses the requested secrets.
+* **Payload:** Requires `project_id`, `user_id`, and `action`.
+* **Behavior:** Fails immediately if the database write is unsuccessful, ensuring secrets are never dispensed without an audit trail.
+
+### `GET /ledger` (Audit & Verify)
+* **Purpose:** Retrieves the ledger history and mathematically verifies the cryptographic integrity of the chain.
+* **Query Params:** `?project_id={Your_Project}`
+* **Behavior:** Recalculates all SHA-256 hashes from the Genesis block to the current height. Returns a status of `VALID` or `TAMPERED` if any data anomalies are detected.
 
 ---
 
@@ -40,7 +68,7 @@ import requests
 import os
 
 # 1. Configuration
-API_URL = "https://<YOUR_API_ID>[.execute-api.us-east-1.amazonaws.com/prod/ledger](https://.execute-api.us-east-1.amazonaws.com/prod/ledger)"
+API_URL = "[https://lv1jxm0j6a.execute-api.us-east-1.amazonaws.com/Test/ledger](https://lv1jxm0j6a.execute-api.us-east-1.amazonaws.com/Test/ledger)"
 API_KEY = "your_issued_api_key_here"
 PROJECT_ID = "Project-Alpha"
 USER_ID = "student_name"
@@ -74,8 +102,6 @@ if response.status_code == 200:
     os.environ['DB_PASSWORD'] = secrets.get('DB_PASSWORD')
 else:
     print(f"Access Denied: {data}")
-```
-
 ---
 
 ## The Verification Dashboard
