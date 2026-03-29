@@ -101,7 +101,8 @@ if response.status_code == 200:
     os.environ['DB_PASSWORD'] = secrets.get('DB_PASSWORD')
 else:
     print(f"Access Denied: {data}")
----```
+---
+```
 
 ## The Verification Dashboard
 
